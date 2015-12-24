@@ -80,9 +80,9 @@ var functionMain = function() {
         CFG['auto_potion'] = GM_getValue('cfg_auto_potion', false);
         CFG['q_key'] = GM_getValue('cfg_q_key', false);
         CFG['diff_life'] = parseInt(GM_getValue('cfg_diff_life', 500));
-        CFG['active_skill'] = parseInt(GM_getValue('cfg_active_skill', 1));
-        CFG['life_potion'] = parseInt(GM_getValue('cfg_life_potion', 1));
-        CFG['auto_refresh'] = GM_getValue('cfg_auto_refresh', true);
+        CFG['skill_def'] = parseInt(GM_getValue('cfg_skill_def', 1));
+        CFG['potion_def'] = parseInt(GM_getValue('cfg_potion_def', 1));
+        CFG['auto_refresh'] = GM_getValue('cfg_auto_refresh', false);
         CFG['interval_refresh'] = parseInt(GM_getValue('cfg_interval_refresh', 10));
     };
 
@@ -150,10 +150,10 @@ var functionMain = function() {
             var callback = function(event) {
                 var key = event.which;
                 if (MAP_VIEW) {
-                    if (key == 69) useSkill(9); // E
+                    if (key == 69) useSkill(CFG['skill_def']); // E
                     //if (key == 82) resetStats(); // R
-                    if (key == 79) enableAutoXP();
-                    if (key == 82) usePotion(1); // R
+                    if (key == 79) enableAutoXP(); // O
+                    if (key == 82) usePotion(CFG['potion_def']); // R
                     //if (key == 69) enableAutoXP(); // E
                     //if (key == 82) autoXP(); // R
                 }
@@ -176,8 +176,8 @@ var functionMain = function() {
         				var attackKey = 65; // A
         				if(CFG['q_key']) attackKey = 81; // Q
         				if(key == 82) refreshMap(); // R
-        				else if(key == 69) usePotion(CFG['life_potion']); // E
-        				else if(key == attackKey) useSkill(CFG['active_skill']); // Attack Key
+        				else if(key == 69) usePotion(CFG['potion_def']); // E
+        				else if(key == attackKey) useSkill(CFG['skill_def']); // Attack Key
         				else if(key == 79) enableAutoXP(); // O
         			// }
         			if(key == 80) openPanel(); // P
@@ -236,7 +236,7 @@ var functionMain = function() {
             BOT_actionExecuted();
             var life = getPlayerLife();
             if ((life['current'] > 0) && (life['max'] - life['current'] > CFG['diff_life'])) {
-                takePotionWhenPossible(CFG['life_potion']);
+                takePotionWhenPossible(CFG['potion_def']);
             }
         } else window.setTimeout(autoPotion, nextAction);
     };
@@ -399,10 +399,10 @@ var functionMain = function() {
             BOT_actionExecuted();
             var life = getPlayerLife();
             if ((life['current'] > 0) && (parseInt(life['max'] - life['current']) > CFG['diff_life'])) { // si la vie est inférieure au seuil
-                takePotionWhenPossible(CFG['life_potion']);
+                takePotionWhenPossible(CFG['potion_def']);
             } else { // si la vie est ok
                 if (document.getElementById('content_pve')) { // si un monstre est présent
-                    useSkill(CFG['active_skill']);
+                    useSkill(CFG['skill_def']);
                 } else { // si aucun monstre n'est présent
                     window.setTimeout(refreshMap, 2000);
                 }
@@ -487,8 +487,8 @@ var functionMain = function() {
         createOption(oContent, 'Potion automatique', 'checkbox', 'auto_potion');
         createOption(oContent, 'Potion automatique (différence de vie)', 'value', 'diff_life');
         //createOption(oContent, 'Attaquer avec la touche Q (à la place de A)', 'checkbox', 'q_key');
-        createOption(oContent, 'Compétence par défaut (1-20)', 'value', 'active_skill');
-        createOption(oContent, 'Potion par défaut (1-2)', 'value', 'life_potion');
+        createOption(oContent, 'Compétence par défaut (1-20)', 'value', 'skill_def');
+        createOption(oContent, 'Potion par défaut (1-2)', 'value', 'potion_def');
         var oStatsTitle = document.createElement('h3');
         oStatsTitle.appendChild(document.createTextNode('Logs: (léger bug qui prend parfois la compétence deux fois en compte)'));
         oStatsTitle.style.marginTop = '25px';
