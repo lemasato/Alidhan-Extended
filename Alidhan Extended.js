@@ -10,7 +10,7 @@
 // @grant 	GM_deleteValue
 // @grant	GM_openInTab
 // @grant	GM_registerMenuCommand
-// @version	1.0
+// @version	1.0.01
 // ==/UserScript==
 
 /* MAIN FUNCTION */
